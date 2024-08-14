@@ -74,3 +74,12 @@ export async function getUsersHandler() {
 
   return users;
 }
+
+export async function logoutHandler(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  reply.clearCookie("access_token");
+
+  return reply.status(201).send({ message: "Logout successfuly" });
+}
