@@ -1,8 +1,24 @@
-import Fastify from "fastify";
+import Fastify, { FastifyRequest, FastifyReply } from "fastify";
+import fjwt, { FastifyJWT } from "@fastify/jwt";
+import fCookie from "@fastify/cookie";
 import userRoutes from "./modules/user/user.route";
 import { userSchemas } from "./modules/user/user.schema";
 
 const server = Fastify();
+
+server.register(fjwt, {
+  secret: process.env.JWT_SECRET || "some-secret-key",
+});
+
+server.addHook("preHandler", (req, res, next) => {
+  req.jwt = server.jwt;
+  return next();
+});
+
+server.register(fCookie, {
+  secret: process.env.COOKIE_SECRET || "some-secret-key",
+  hook: "preHandler",
+});
 
 async function main() {
   for (const schema of userSchemas) {
@@ -21,3 +37,23 @@ async function main() {
 }
 
 main();
+
+
+// ├── src
+// │  ├── app.ts
+// │  ├── modules
+// │  │  ├── product
+// │  │  └── user
+// │  │    ├── user.route.ts
+// │  │    ├── user.schema.ts
+// │  │    ├── user.controller.ts
+// │  │    └── user.service.ts
+// │  └── utils
+// │     ├── hash.ts
+// │     └── prisma.ts
+// ├── prisma
+// │  └── schema.prisma
+// ├── package.json
+// ├── tsconfig.json
+// ├── global.d.ts
+// └── .env
