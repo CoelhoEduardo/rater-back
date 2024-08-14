@@ -15,6 +15,20 @@ server.addHook("preHandler", (req, res, next) => {
   return next();
 });
 
+server.decorate(
+  "authenticate",
+  async (request: FastifyRequest, reply: FastifyReply) => {
+    const token = request.cookies.access_token;
+
+    if (!token) {
+      return reply.status(401).send({ message: "Atuhentication required" });
+    }
+
+    const decoded = request.jwt.verify<FastifyJWT['user']>(token);
+    request.user = decoded;
+  }
+);
+
 server.register(fCookie, {
   secret: process.env.COOKIE_SECRET || "some-secret-key",
   hook: "preHandler",
@@ -37,7 +51,6 @@ async function main() {
 }
 
 main();
-
 
 // ├── src
 // │  ├── app.ts
