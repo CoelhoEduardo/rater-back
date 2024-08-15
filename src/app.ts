@@ -3,6 +3,7 @@ import fjwt, { FastifyJWT } from "@fastify/jwt";
 import fCookie from "@fastify/cookie";
 import userRoutes from "./modules/user/user.route";
 import { userSchemas } from "./modules/user/user.schema";
+import movieRoutes from "./modules/movie/movie.route";
 
 const server = Fastify();
 
@@ -24,7 +25,7 @@ server.decorate(
       return reply.status(401).send({ message: "Atuhentication required" });
     }
 
-    const decoded = request.jwt.verify<FastifyJWT['user']>(token);
+    const decoded = request.jwt.verify<FastifyJWT["user"]>(token);
     request.user = decoded;
   }
 );
@@ -40,6 +41,7 @@ async function main() {
   }
 
   server.register(userRoutes, { prefix: "api/users" });
+  server.register(movieRoutes, { prefix: "api/movies " });
 
   try {
     await server.listen({ port: 3000, host: "0.0.0.0" });
@@ -55,7 +57,7 @@ main();
 // ├── src
 // │  ├── app.ts
 // │  ├── modules
-// │  │  ├── product
+// │  │  ├── movie
 // │  │  └── user
 // │  │    ├── user.route.ts
 // │  │    ├── user.schema.ts

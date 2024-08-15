@@ -21,3 +21,28 @@ model User{
     salt  String
 }
 
+model Movies {
+  id  Int @id @default(autoincrement())
+  title String
+  description String
+  director  String
+  cast  Actors[]
+  categories  String[]
+  rating Int
+  rating_count  Int
+  rating_average  Int
+  launch_year String
+  duration  Int
+  age_limited Int
+  banner_url  String
+}
+
+model Actors {
+  id Int  @id @default(autoincrement())
+  name String
+  born_date Int
+  origin  String
+  about String
+  jobs  Movies[]
+  photo String
+}
